@@ -29,3 +29,4 @@ vgcreate $lvm_vol $lv_disks
 sleep 60
 echo y | lvcreate -Zy -Wy --yes -i $lv_disk_count -L  ${total_size}G -n $lvm_vol $lvm_grp
 wipefs -f /dev/$lvm_vol/$lvm_grp
+

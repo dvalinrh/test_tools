@@ -2,6 +2,7 @@
 
 device_to_use=$3
 mount_pnt=$2
+mkdir $mount_pnt
 echo $2
 echo $3
 if [[ $device_to_use = "" ]]; then
