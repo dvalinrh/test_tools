@@ -1,0 +1,27 @@
+#!/bin/bash
+lv_disks=""
+lv_total_size=0
+lv_disk_count=0;
+devices_to_use=$1
+lvm_vol=$2
+lvm_grp=$3
+
+#
+# We need to handle single disk also!!!!
+#
+echo $devices_to_use
+for i in $devices_to_use; do
+	lv_disks="$i "${lv_disks}
+	echo lv_disks $lv_disks
+	size=`fdisk -l $i | grep bytes | grep  Disk | cut -d' ' -f 5`
+	gb=`echo "$size/(1024*1024*1024)" | bc`
+	let "lv_total_size=$lv_total_size+$gb"
+	let "lv_disk_count=$lv_disk_count+1"
+done
+let "total_size=$lv_total_size-100"
+echo y | pvcreate -ff $lv_disks
+sleep 60
+	vgcreate iozone $lv_disks
+sleep 60
+echo y | lvcreate -Zy -Wy --yes -i $lv_disk_count -L  ${lv_total_size}G -n $lvm_vol $lvm_grp
+wipefs -f /dev/lvm_vol/$lvm_grp
