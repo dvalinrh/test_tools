@@ -10,18 +10,28 @@ lvm_grp=$3
 # We need to handle single disk also!!!!
 #
 echo $devices_to_use
+seper=""
 for i in $devices_to_use; do
-	lv_disks="$i "${lv_disks}
-	echo lv_disks $lv_disks
+	lv_disks=${i}${seper}${lv_disks}
 	size=`fdisk -l $i | grep bytes | grep  Disk | cut -d' ' -f 5`
 	gb=`echo "$size/(1024*1024*1024)" | bc`
 	let "lv_total_size=$lv_total_size+$gb"
 	let "lv_disk_count=$lv_disk_count+1"
+	seper=" "
 done
+lvremove -f $2/$3
+vgremove -f $2
+
+echo lvremove -f $2/$3 > /tmp/dave
+echo vgremove -f $2 >> /tmp/dave
 let "total_size=$lv_total_size-100"
+echo pvcreate -ff $lv_disks >> /tmp/dave
 echo y | pvcreate -ff $lv_disks
 sleep 60
-	vgcreate $lvm_vol $lv_disks
+vgcreate $lvm_vol $lv_disks
+echo vgcreate $lvm_vol $lv_disks >> /tmp/dave
 sleep 60
 echo y | lvcreate -Zy -Wy --yes -i $lv_disk_count -L  ${lv_total_size}G -n $lvm_vol $lvm_grp
+echo lvcreate -Zy -Wy --yes -i $lv_disk_count -L  ${lv_total_size}G -n $lvm_vol $lvm_grp >> /tmp/dave
+echo wipefs -f /dev/$lvm_vol/$lvm_grp >> /tmp/dave
 wipefs -f /dev/$lvm_vol/$lvm_grp
