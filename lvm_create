@@ -21,7 +21,7 @@ done
 let "total_size=$lv_total_size-100"
 echo y | pvcreate -ff $lv_disks
 sleep 60
-	vgcreate iozone $lv_disks
+	vgcreate $lvm_vol $lv_disks
 sleep 60
 echo y | lvcreate -Zy -Wy --yes -i $lv_disk_count -L  ${lv_total_size}G -n $lvm_vol $lvm_grp
 wipefs -f /dev/lvm_vol/$lvm_grp
