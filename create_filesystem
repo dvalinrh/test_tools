@@ -1,0 +1,35 @@
+#!/bin/bash
+
+device_to_use=$3
+mount_pnt=$2
+echo $2
+echo $3
+if [[ $device_to_use = "" ]]; then
+	echo You need to designate a device to use.
+	exit 1
+fi
+case $1 in
+	ext3)
+		MKFS_OPS="-F"
+	;;
+	ext4|ext4dev)
+		MKFS_OPS="-F"
+	;;
+	gfs)
+		MKFS_OPS="-O -p lock_nolock -j 1"
+	;;
+	gfs2)
+		MKFS_OPS="-O -p lock_nolock -j 1"
+	;;
+	xfs)
+		MKFS_OPS="-f"
+	;;
+	*)
+		echo Error, $1 unknown filesystem type
+		exit
+	;;
+esac
+echo "mkfs -t ${1} ${MKFS_OPS} ${device_to_use}"
+mkfs -t ${1} ${MKFS_OPS} ${device_to_use}
+mount ${device_to_use} ${mount_pnt} 
+exit 0
