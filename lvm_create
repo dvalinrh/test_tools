@@ -22,15 +22,15 @@ usage()
 validate_data()
 {
 	if [[ $lvm_vol = "" ]]; then
-		echo Need to designate an lvm_vol name."
+		echo Need to designate an lvm_vol name.
 		exit -1
 	fi
 	if [[ $lvm_grp = "" ]]; then
-		echo Need to designate an lvm_grp name."
+		echo Need to designate an lvm_grp name.
 		exit -1
 	fi
 	if [[ $devices_to_use = "" ]]; then
-		echo Need to designate an lvm_grp name."
+		echo Need to designate an lvm_grp name.
 		exit -1
 	fi
 	for i in $devices_to_use;
