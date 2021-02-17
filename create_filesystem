@@ -10,7 +10,7 @@ usage()
 	echo "  --fs_type: filesystem to create.  ${valid_fs_type}"
 	echo "  --mount_dir: directory to mount to"
 	echo "  --device: device to use."
-	exit
+	exit 1
 }
 
 #
