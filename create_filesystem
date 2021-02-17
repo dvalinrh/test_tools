@@ -75,6 +75,7 @@ while [[ $# -gt 0 ]]; do
 		;;
 		--mount_dir)
 			mount_pnt=${2}
+			mkdir -P $mount_pnt
 			shift 2
 		;;
 		--usage)
