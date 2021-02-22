@@ -74,5 +74,5 @@ fi
 
 for findex in `seq 1 1 $number_mount_pnts`
 do
-	umount  ${mount_pnt}${findex}}
+	umount  ${mount_pnt}${findex}
 done
