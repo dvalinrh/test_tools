@@ -72,7 +72,8 @@ if [[ $number_mount_pnts == "" ]]; then
 	usage
 fi
 
-for findex in `seq 1 1 $number_mount_pnts`
+let "number_mount_pnts=$number_mount_pnts-1"
+for findex in `seq 0 1 $number_mount_pnts`
 do
 	umount  ${mount_pnt}${findex}
 done
