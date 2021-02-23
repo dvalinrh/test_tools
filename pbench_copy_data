@@ -1,0 +1,77 @@
+#!/bin/bash
+prefix="no_prefix_deisgnated"
+user=""
+
+usage()
+{
+	echo "Usage: $1"
+	echo "  --prefix: prefix to attach to the results"
+	echo "  --user: Name of the user.  If blank, will be the current user"
+	exit 1
+}
+
+
+#
+# Define options
+#
+ARGUMENT_LIST=(
+        "prefix"
+	"user"
+)
+
+NO_ARGUMENTS=(
+        "usage"
+)
+
+# read arguments
+opts=$(getopt \
+    --longoptions "$(printf "%s:," "${ARGUMENT_LIST[@]}")" \
+    --longoptions "$(printf "%s," "${NO_ARGUMENTS[@]}")" \
+    --name "$(basename "$0")" \
+    --options "h" \
+    -- "$@"
+)
+
+if [ $? -ne 0 ]; then
+        exit
+fi
+eval set --$opts
+
+while [[ $# -gt 0 ]]; do
+	case "$1" in
+		--prefix)
+			prefix=$2
+			shift 2
+		;;
+		--userj)
+			userj=$2
+			shift 2
+		;;
+		--usage)
+			usage $0
+		;;
+		-h)
+			usage $0
+		;;
+		--)
+			break;
+		;;
+		*)
+			echo option not found $1
+			usage $0
+		;;
+	esac
+done
+
+echo pbench-copy-results --user=$user --prefix $results_prefix
+pbench-copy-results --user=$user --prefix $results_prefix
+retVal=$?
+while [ $retVal -gt 0 ]; do
+	#
+	# We failed, sleep a bit and then try again.
+	sleep 30
+	echo pbench-copy-results failed, retrying $retval
+	pbench-copy-results --user=$user --prefix $results_prefix
+	retVal=$?
+done
+
