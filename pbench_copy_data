@@ -43,7 +43,7 @@ while [[ $# -gt 0 ]]; do
 			prefix=$2
 			shift 2
 		;;
-		--userj)
+		--user)
 			userj=$2
 			shift 2
 		;;
