@@ -39,12 +39,16 @@ eval set --$opts
 
 while [[ $# -gt 0 ]]; do
 	case "$1" in
+		--hostname)
+			full_hostname=$2
+			export $full_hostname
+			shift 2
 		--prefix)
-			prefix=$2
+			results_prefix=$2
 			shift 2
 		;;
 		--user)
-			userj=$2
+			user=$2
 			shift 2
 		;;
 		--usage)
@@ -63,15 +67,15 @@ while [[ $# -gt 0 ]]; do
 	esac
 done
 
-echo pbench-copy-results --user=$user --prefix $results_prefix
-pbench-copy-results --user=$user --prefix $results_prefix
+echo pbench-copy-results --user $user --prefix $results_prefix
+pbench-copy-results --user $user --prefix $results_prefix
 retVal=$?
 while [ $retVal -gt 0 ]; do
 	#
 	# We failed, sleep a bit and then try again.
 	sleep 30
 	echo pbench-copy-results failed, retrying $retval
-	pbench-copy-results --user=$user --prefix $results_prefix
+	pbench-copy-results --user $user --prefix $results_prefix
 	retVal=$?
 done
 
