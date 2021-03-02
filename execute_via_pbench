@@ -1,12 +1,15 @@
 #!/bin/bash
 
+chars=`echo $0 | awk -v RS='/' 'END{print NR-1}'`
+TOOLS_BIN=`echo $0 | cut -d'/' -f 1-${chars}`
+
 cmd_executing=""
 configuration=""
 puser=""
 run_label=""
 spacing=0
 sys_type=""
-test=""
+test_name=""
 times_to_run=1
 
 
@@ -119,12 +122,12 @@ last_dir=`ls -rtd /tmp/results_${test_name}_* | grep -v tar |  tail -1`
 pushd $dir > /dev/null
 cp $last_dir/${test_name}_results/results_${test_name}*/results_${test_name}.csv .
 
-last_tar=`ls -rtd /tmp/results_${test_name}_*tar |  tail -1
+last_tar=`ls -rtd /tmp/results_${test_name}_*tar |  tail -1`
 tar xf $last_tar
 cd /tmp
-mv_tar_to=`echo $last_tar | sed "s/results_${test_name}/results_${test_name}/"`
+mv_tar_to=`echo $last_tar | sed "s/results_${test_name}/results_pbench_${test_name}/"`
 mv $last_tar $mv_tar_to
 value=`$TOOLS_BIN/set_pbench_variables --host_config $configuration --sys_type $sys_type --test ${test_name} --pbench_user $puser --run_label $run_label`
 results_prefix=`echo $value | cut -d: -f 2`
 hostname=`echo $value | cut -d: -f 1`
-$TOOLS_BIN/pbench_copy_data --hostname "${hostname}" --user "${puser}" --prefix ${results_prefix}
+echo $TOOLS_BIN/pbench_copy_data --hostname "${hostname}" --user "${puser}" --prefix ${results_prefix}
