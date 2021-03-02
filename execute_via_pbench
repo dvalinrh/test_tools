@@ -121,6 +121,7 @@ dir=`ls -rtd /var/lib/pbench-agent/pben*${test_name}* | tail -1`
 last_dir=`ls -rtd /tmp/results_${test_name}_* | grep -v tar |  tail -1`
 pushd $dir > /dev/null
 cp $last_dir/${test_name}_results/results_${test_name}*/results_${test_name}.csv .
+${TOOLS_BIN}/convert_csv_to_txt --field_seper : --field_size ${spacing} --results_in results_${test_name}.csv --results_out results.txt
 
 last_tar=`ls -rtd /tmp/results_${test_name}_*tar |  tail -1`
 tar xf $last_tar
