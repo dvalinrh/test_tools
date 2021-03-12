@@ -69,14 +69,14 @@ while [[ $# -gt 0 ]]; do
 	esac
 done
 
-echo pbench-copy-results --user $user --prefix $results_prefix
+echo pbench-copy-results --user $user --prefix $results_prefix >> /tmp/debugging
 pbench-copy-results --user $user --prefix $results_prefix
 retVal=$?
 while [ $retVal -gt 0 ]; do
 	#
 	# We failed, sleep a bit and then try again.
+	echo pbench-copy-results failed, retrying $retval >> /tmp/debugging
 	sleep 30
-	echo pbench-copy-results failed, retrying $retval
 	pbench-copy-results --user $user --prefix $results_prefix
 	retVal=$?
 done
