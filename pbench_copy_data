@@ -41,8 +41,7 @@ eval set --$opts
 while [[ $# -gt 0 ]]; do
 	case "$1" in
 		--hostname)
-			full_hostname=$2
-			export full_hostname
+			fhost=$2
 			shift 2
 		;;
 		--prefix)
@@ -68,6 +67,9 @@ while [[ $# -gt 0 ]]; do
 		;;
 	esac
 done
+date_value=`date +"%D" | sed "s/\//_/g"`
+full_hostname=${fhost}_${user}_${data_value}
+export full_hostname
 
 echo pbench-copy-results --user $user --prefix $results_prefix >> /tmp/debugging
 pbench-copy-results --user $user --prefix $results_prefix
