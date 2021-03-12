@@ -68,7 +68,7 @@ while [[ $# -gt 0 ]]; do
 	esac
 done
 date_value=`date +"%D" | sed "s/\//_/g"`
-full_hostname=${fhost}_${user}_${data_value}
+full_hostname=${fhost}_${user}_${date_value}
 export full_hostname
 
 echo pbench-copy-results --user $user --prefix $results_prefix >> /tmp/debugging
