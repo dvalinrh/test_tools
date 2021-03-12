@@ -73,6 +73,7 @@ export full_hostname
 
 echo pbench-copy-results --user $user --prefix $results_prefix >> /tmp/debugging
 pbench-copy-results --user $user --prefix $results_prefix
+exit
 retVal=$?
 while [ $retVal -gt 0 ]; do
 	#
