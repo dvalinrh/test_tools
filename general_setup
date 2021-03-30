@@ -1,3 +1,20 @@
+
+#
+# Values setting for test wrappers to use.
+#
+# TOOLS_BIN: points to the tool directory
+# to_home_root: home directory
+# to_configuration: configuration information
+# to_times_to_run: number of times to run the test
+# to_pbench: Run the test via pbench
+# to_puser: User running pbench
+# to_run_label: Label for the run
+# to_user: User on the test system running the test
+# to_sys_type: for results info, basically aws, azure or local
+# to_sysname: name of the system
+# to_tuned_setting: tuned setting
+# to_tuned_setting_out: tuned setting
+
 pushd test_tools
 TOOLS_BIN=`pwd`
 popd
