@@ -1,5 +1,6 @@
 #!/bin/bash
 
+source ~/.bashrc
 chars=`echo $0 | awk -v RS='/' 'END{print NR-1}'`
 TOOLS_BIN=`echo $0 | cut -d'/' -f 1-${chars}`
 
