@@ -135,7 +135,3 @@ results_prefix=`echo $value | cut -d: -f 2`
 hostname=`echo $value | cut -d: -f 1`
 echo $TOOLS_BIN/pbench_copy_data --hostname "${hostname}" --user "${puser}" --prefix ${results_prefix} >> /tmp/debugging
 $TOOLS_BIN/pbench_copy_data --hostname "${hostname}" --user "${puser}" --prefix ${results_prefix}
-
-cd /tmp
-mv_to=`ls -d results_*${test_name}*.tar | sed "s/_${test_name}/_pbench_${test_name}/g"`
-mv  results_*${test_name}*.tar $mv_to
