@@ -73,12 +73,12 @@ while [[ $# -gt 0 ]]; do
 			shift 2
 		;;
 		--host_config)
-			cmd_options="${1} ${2}"
+			cmd_options="${cmd_options} ${1} ${2}"
 			configuration=${2}
 			shift 2
 		;;
                 --iterations)
-			cmd_options="${1} ${2}"
+			cmd_options="${cmd_options} ${1} ${2}"
                         times_to_run=${2}
 			shift 2
                 ;;
@@ -95,7 +95,7 @@ while [[ $# -gt 0 ]]; do
 			shift 2
 		;;
 		--sys_type)
-			cmd_options="${1} ${2}"
+			cmd_options="${cmd_options} ${1} ${2}"
 			sys_type=${2}
 			shift 2
 		;;
@@ -113,7 +113,7 @@ while [[ $# -gt 0 ]]; do
 			break; 
 		;;
 		*)
-			cmd_options="${1} ${2}"
+			cmd_options="${cmd_options} ${1} ${2}"
 		;;
         esac
 done
