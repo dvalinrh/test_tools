@@ -132,4 +132,4 @@ value=`$TOOLS_BIN/set_pbench_variables --host_config $configuration --sys_type $
 results_prefix=`echo $value | cut -d: -f 2`
 hostname=`echo $value | cut -d: -f 1`
 echo $TOOLS_BIN/pbench_copy_data --hostname "${hostname}" --user "${puser}" --prefix ${results_prefix} >> /tmp/debugging
-$TOOLS_BIN/pbench_copy_data --hostname "${hostname}" --user "${puser}" --prefix ${results_prefix}
+$TOOLS_BIN/pbench_copy_data --hostname "${run_label}" --user "${puser}" --prefix ${results_prefix}
