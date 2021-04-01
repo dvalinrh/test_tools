@@ -55,7 +55,7 @@ to_tuned_setting_out=""
 i=1
 j=$#
 separ=""
-cmd_options=""
+gen_args_back=$0
 while [ $i -le $j ]
 do
         case "$1" in
@@ -120,8 +120,10 @@ do
 			#
 			# Option not recognized, must be specific to the wrapper.
 			#
+			gen_args_back=${gen_args_back}" "${1}
 			i=$((i + 1))
 			shift 1
 		;;
         esac
 done
+set $gen_args_back
