@@ -118,6 +118,7 @@ do
 			#
 			# Option not recognized, must be specific to the wrapper.
 			#
+			i=$((i + 1))
 			shift 1
 		;;
         esac
