@@ -1,5 +1,7 @@
-
 #
+# This file is contains code that is common among the test wrappers.
+#
+
 # Values setting for test wrappers to use.
 #
 # TOOLS_BIN: points to the tool directory
@@ -15,17 +17,35 @@
 # to_tuned_setting: tuned setting
 # to_tuned_setting_out: tuned setting
 
-pushd test_tools
-TOOLS_BIN=`pwd`
-popd
-to_home_root=`pwd`
+#
+# Present usage information.
+#
+
+gs_usage_info()
+{
+	echo "General options"
+        echo "  --cloud_vendor: vendor of cloud running on.  Currently, aws, azure and local"
+        echo "  --home_parent"
+        echo "  --host_config"
+        echo "  --iterations"
+        echo "  --pbench: use pbench-user-benchmark and place information into pbench"
+        echo "  --pbench_user: user who started everything."
+        echo "  --run_label: the label to associate with the pbench run"
+        echo "  --run_user: user that is actually running the test on the test system."
+        echo "  --sysname: name of the system running, used in determing config files"
+        echo "  --tuned_setting: used in naming the tar file"
+        echo "  --usage: this usage message"
+	exit
+}
+
+to_cloud_vendor="local"
 to_configuration=""
-to_times_to_run=1
+to_home_root=`pwd`/test_tools
 to_pbench=0
 to_puser=`id -nu`
+to_times_to_run=1
 to_run_label=""
-to_user=""
-to_sys_type=""
+to_user=`id -nu`
 to_sysname=""
 to_tuned_setting=""
 to_tuned_setting_out=""
@@ -37,6 +57,11 @@ cmd_options=""
 while [ $i -le $j ]
 do
         case "$1" in
+		--cloud_vendor)
+			i=$((i + 2))
+			to_sys_type=${2}
+			shift 2
+		;;
                 --home_parent)
 			i=$((i + 2))
                         to_home_root=${2}
@@ -72,11 +97,6 @@ do
                         to_user=${2}
 			shift 2
                 ;;
-		--sys_type)
-			i=$((i + 2))
-			to_sys_type=${2}
-			shift 2
-		;;
 		--sysname)
 			i=$((i + 2))
 			to_sysname=${2}
@@ -88,8 +108,17 @@ do
 			to_tuned_setting_out="${2}"
 			shift 2
 		;;
+		--usage)
+			gs_usage_info
+		;;
 		--)
 			break; 
+		;;
+		*)
+			#
+			# Option not recognized, must be specific to the wrapper.
+			#
+			shift 1
 		;;
         esac
 done
