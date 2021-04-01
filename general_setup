@@ -32,13 +32,14 @@ gs_usage_info()
         echo "  --pbench_user: user who started everything."
         echo "  --run_label: the label to associate with the pbench run"
         echo "  --run_user: user that is actually running the test on the test system."
+	echo "  --sys_type: Type of system working with, aws, azure, hostname"
         echo "  --sysname: name of the system running, used in determing config files"
         echo "  --tuned_setting: used in naming the tar file"
         echo "  --usage: this usage message"
 	exit
 }
 
-to_cloud_vendor="local"
+to_sys_type="hostname"
 to_configuration=""
 to_home_root=`pwd`
 TOOLS_BIN=`pwd`/test_tools
@@ -58,7 +59,7 @@ cmd_options=""
 while [ $i -le $j ]
 do
         case "$1" in
-		--cloud_vendor)
+		--sys_type)
 			i=$((i + 2))
 			to_sys_type=${2}
 			shift 2
