@@ -40,7 +40,8 @@ gs_usage_info()
 
 to_cloud_vendor="local"
 to_configuration=""
-to_home_root=`pwd`/test_tools
+to_home_root=`pwd`
+TOOLS_BIN=`pwd`/test_tools
 to_pbench=0
 to_puser=`id -nu`
 to_times_to_run=1
