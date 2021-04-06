@@ -68,9 +68,22 @@ while [[ $# -gt 0 ]]; do
 	esac
 done
 full_hostname=${fhost}_${user}
+if [[ $full_hostname == *"--"* ]]; then
+	echo Error full_hostname $full_hostname contains "--"! >> /tmp/debugging
+	exit
+fi
 export full_hostname
 
 echo pbench-copy-results --user $user --prefix $results_prefix >> /tmp/debugging
+if [[ $user == *"--"* ]]; then
+	echo Error user $user contains "--"! >> /tmp/debugging
+	exit
+fi
+if [[ $results_prefix == *"--"* ]]; then
+	echo Error results_prefix $results_prefix contains "--"! >> /tmp/debugging
+	exit
+fi
+
 pbench-copy-results --user $user --prefix $results_prefix
 exit
 retVal=$?
