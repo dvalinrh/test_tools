@@ -2,6 +2,11 @@
 # This file is contains code that is common among the test wrappers.
 #
 
+#
+# Source .bashrc to keep pbench happy.
+# 
+source ~/.bashrc
+
 # Values setting for test wrappers to use.
 #
 # TOOLS_BIN: points to the tool directory
