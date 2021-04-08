@@ -55,7 +55,7 @@ to_run_label=""
 to_user=`whoami`
 to_sysname=`hostname`
 if [ -f /usr/sbin/tuned-adm ]; then
-	tval=/usr/sbin/tuned-adm active|awk '{print $4}'
+	tval=`/usr/sbin/tuned-adm active|awk '{print $4}'`
 else
 	tval="none"
 fi
