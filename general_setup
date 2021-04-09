@@ -21,6 +21,7 @@ source ~/.bashrc
 # to_sysname: name of the system
 # to_tuned_setting: tuned setting
 # to_tuned_setting_out: tuned setting
+# to_results_add: additional results string to add, mainly pbench_
 
 #
 # Present usage information.
@@ -44,6 +45,7 @@ gs_usage_info()
 	exit
 }
 
+to_results_add=""
 to_sys_type=`hostname`
 to_configuration=`hostname`
 to_home_root=`pwd`
@@ -89,6 +91,7 @@ do
 			shift 2
                 ;;
 		--pbench)
+			to_results_add="pbench_"
 			to_pbench=1
 			i=$((i + 1))
 			shift 1
