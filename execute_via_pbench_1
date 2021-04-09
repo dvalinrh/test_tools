@@ -135,3 +135,14 @@ results_prefix=`echo $value | cut -d: -f 2`
 hostname=`echo $value | cut -d: -f 1`
 echo $TOOLS_BIN/pbench_copy_data --hostname "${hostname}" --user "${puser}" --prefix ${results_prefix} >> /tmp/debugging
 $TOOLS_BIN/pbench_copy_data --hostname "${hostname}" --user "${puser}" --prefix ${results_prefix}
+
+#
+# Move results in /tmp to be results_pbench.....
+# Keeps Zathras happy, and matches with what was run.
+#
+cd /tmp
+files=`ls results_*.tar | grep -v pbench`
+for i in $files; do
+	move_to=`echo $files | sed "s/^results_s/results_pbench_/"`
+	mv $i $move_to
+done
