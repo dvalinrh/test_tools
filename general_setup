@@ -20,7 +20,6 @@ source ~/.bashrc
 # to_sys_type: for results info, basically aws, azure or local
 # to_sysname: name of the system
 # to_tuned_setting: tuned setting
-# to_tuned_setting_out: tuned setting
 
 #
 # Present usage information.
@@ -59,7 +58,6 @@ if [ -f /usr/sbin/tuned-adm ]; then
 else
 	tval="none"
 fi
-to_tuned_setting=$tval
 to_tuned_setting_out=$tval
 
 i=1
@@ -115,8 +113,7 @@ do
 		;;
                 --tuned_setting)
 			i=$((i + 2))
-                        to_tuned_setting="-P ${2}"
-			to_tuned_setting_out="${2}"
+			to_tuned_setting="${2}"
 			shift 2
 		;;
 		--usage)
