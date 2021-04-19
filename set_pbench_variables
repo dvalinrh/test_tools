@@ -95,6 +95,6 @@ fi
 # Really we are exporting the label.
 #
 hostname=${pbench_user}_${run_label}
-results_prefix=${test}_instance_"${temp}"
+results_prefix="${temp}"
 echo ${hostname}:${results_prefix}
 
