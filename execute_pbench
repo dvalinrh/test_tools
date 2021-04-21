@@ -1,6 +1,8 @@
 #!/bin/bash
 
 source ~/.bashrc
+
+echo Called execute_pbench >> /tmp/debugging
 chars=`echo $0 | awk -v RS='/' 'END{print NR-1}'`
 TOOLS_BIN=`echo $0 | cut -d'/' -f 1-${chars}`
 
@@ -112,8 +114,10 @@ do
 done
 
 echo $times_to_run > ./iteration.lis
+echo Calling pbench-user-benchmark >> /tmp/debugging
 echo pbench-user-benchmark -C ${puser}_${test_name}_test --iteration-list=./iteration.lis -- $cmd_executing ${cmd_options}
 pbench-user-benchmark -C ${puser}_${test_name}_test --iteration-list=./iteration.lis -- $cmd_executing ${cmd_options}
+echo returned from pbench-user-benchmark >> /tmp/debugging
 
 dir=`ls -rtd /var/lib/pbench-agent/pben*${test_name}* | tail -1`
 pushd /tmp > /dev/null
