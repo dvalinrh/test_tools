@@ -49,6 +49,7 @@ to_home_root=`pwd`
 TOOLS_BIN=`pwd`/test_tools
 to_pbench=0
 to_puser=`whoami`
+to_run_user=`whoami
 to_times_to_run=1
 to_run_label=""
 to_user=`whoami`
@@ -58,7 +59,7 @@ if [ -f /usr/sbin/tuned-adm ]; then
 else
 	tval="none"
 fi
-to_tuned_setting_out=$tval
+to_tuned_setting=$tval
 
 i=1
 j=$#
