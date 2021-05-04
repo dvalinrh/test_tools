@@ -69,12 +69,11 @@ while [[ $# -gt 0 ]]; do
 		;;
 	esac
 done
-full_hostname=${fhost}_${user}
-if [[ "$full_hostname" == *"--"* ]]; then
-	echo Error full_hostname $full_hostname contains "--"! >> /tmp/debugging
+controller=${fhost}_${user}
+if [[ "$controller" == *"--"* ]]; then
+	echo Error controller $controller contains "--"! >> /tmp/debugging
 	exit 1
 fi
-export full_hostname
 
 echo pbench-copy-results --user "\"$user\"" --prefix "\"$results_prefix\"" >> /tmp/debugging
 if [[ "$user" == *"--"* ]]; then
@@ -86,5 +85,5 @@ if [[ "$results_prefix" == *"--"* ]]; then
 	exit 1
 fi
 
-pbench-copy-results --user "${user}" --prefix "${results_prefix}"
+pbench-copy-results --controller="${controller}" --user="${user}" --prefix="${results_prefix}"
 exit $?
