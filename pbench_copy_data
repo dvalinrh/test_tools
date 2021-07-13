@@ -1,5 +1,5 @@
 #!/bin/bash
-prefix="no_prefix_deisgnated"
+prefix="no_prefix_designated"
 user=""
 
 usage()
@@ -7,7 +7,6 @@ usage()
 	echo "Usage: $1"
 	echo "  --prefix: prefix to attach to the results"
 	echo "  --user: Name of the user.  If blank, will be the current user"
-	exit 1
 }
 
 
@@ -16,27 +15,27 @@ usage()
 #
 ARGUMENT_LIST=(
 	"hostname"
-        "prefix"
+	"prefix"
 	"user"
 )
 
 NO_ARGUMENTS=(
-        "usage"
+	"usage"
 )
 
 # read arguments
 opts=$(getopt \
-    --longoptions "$(printf "%s:," "${ARGUMENT_LIST[@]}")" \
-    --longoptions "$(printf "%s," "${NO_ARGUMENTS[@]}")" \
-    --name "$(basename "$0")" \
-    --options "h" \
-    -- "$@"
+	--longoptions "$(printf "%s:," "${ARGUMENT_LIST[@]}")" \
+	--longoptions "$(printf "%s," "${NO_ARGUMENTS[@]}")" \
+	--name "$(basename "$0")" \
+	--options "h" \
+	-- "$@"
 )
 
 if [ $? -ne 0 ]; then
-        exit
+	exit 1
 fi
-eval set --$opts
+eval set -- $opts
 
 while [[ $# -gt 0 ]]; do
 	case "$1" in
@@ -54,45 +53,37 @@ while [[ $# -gt 0 ]]; do
 		;;
 		--usage)
 			usage $0
+			exit 0
 		;;
 		-h)
 			usage $0
+			exit 0
 		;;
 		--)
 			break;
 		;;
 		*)
-			echo option not found $1
-			usage $0
+			echo option not found $1 >&2
+			usage $0 >&2
+			exit 1
 		;;
 	esac
 done
-full_hostname=${fhost}_${user}
-if [[ $full_hostname == *"--"* ]]; then
-	echo Error full_hostname $full_hostname contains "--"! >> /tmp/debugging
-	exit
+controller=${fhost}_${user}
+if [[ "$controller" == *"--"* ]]; then
+	echo Error controller $controller contains "--"! >> /tmp/debugging
+	exit 1
 fi
-export full_hostname
 
-echo pbench-copy-results --user $user --prefix $results_prefix >> /tmp/debugging
-if [[ $user == *"--"* ]]; then
+echo pbench-copy-results --user "\"$user\"" --prefix "\"$results_prefix\"" >> /tmp/debugging
+if [[ "$user" == *"--"* ]]; then
 	echo Error user $user contains "--"! >> /tmp/debugging
-	exit
+	exit 1
 fi
-if [[ $results_prefix == *"--"* ]]; then
+if [[ "$results_prefix" == *"--"* ]]; then
 	echo Error results_prefix $results_prefix contains "--"! >> /tmp/debugging
-	exit
+	exit 1
 fi
 
-pbench-copy-results --user $user --prefix $results_prefix
-exit
-retVal=$?
-while [ $retVal -gt 0 ]; do
-	#
-	# We failed, sleep a bit and then try again.
-	echo pbench-copy-results failed, retrying $retval >> /tmp/debugging
-	sleep 30
-	pbench-copy-results --user $user --prefix $results_prefix
-	retVal=$?
-done
-
+pbench-copy-results --controller="${controller}" --user="${user}" --prefix="${results_prefix}"
+exit $?
