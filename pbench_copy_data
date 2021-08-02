@@ -87,6 +87,6 @@ if [[ "$results_prefix" == *"--"* ]]; then
 	exit 1
 fi
 
-echo pbench-copy-results --controller="\"${controller}\"" --user="\"${user}\"" --prefix="\"${results_prefix}\""
+echo pbench-copy-results --controller="\"${controller}\"" --user="\"${user}\"" --prefix="\"${results_prefix}\"" >> /tmp/debugging
 pbench-copy-results --controller="${controller}" --user="${user}" --prefix="${results_prefix}"
 exit $?
