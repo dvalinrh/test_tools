@@ -15,6 +15,7 @@ sys_type=""
 test_name=""
 times_to_run=1
 results_dir=""
+pbench_copy=1
 
 #
 # Usage information.
@@ -33,6 +34,7 @@ usage()
 	echo "  --host_config"
 	echo "  --home_parent"
 	echo "  --iterations"
+	echo "  --no_pbench_copy: do not copy pbench data up."
 	echo "  --results_dir: subdirectory to put results into."
 	echo "  --run_label: the label to associate with the pbench run"
 	echo "  --run_user"
@@ -70,6 +72,10 @@ do
 			i=$((i + 2))
 			shift 2
                 ;;
+		--no_pbench_copy)
+			pbench_copy=0
+			shift 1
+		;;
 		--pbench)
 			i=$((i + 1))
 			shift 1
@@ -147,8 +153,11 @@ if [[ $results_dir != "" ]]; then
         results_prefix=${results_prefix}/${results_dir}
 fi
 hostname=`echo $value | cut -d: -f 1`
-echo $TOOLS_BIN/pbench_copy_data --hostname "${hostname}" --user "${puser}" --prefix ${results_prefix} >> /tmp/debugging
-$TOOLS_BIN/pbench_copy_data --hostname "${hostname}" --user "${puser}" --prefix ${results_prefix}
+
+if [ $pbench_copy -eq 1 ]; then
+	echo $TOOLS_BIN/pbench_copy_data --hostname "${hostname}" --user "${puser}" --prefix ${results_prefix} >> /tmp/debugging
+	$TOOLS_BIN/pbench_copy_data --hostname "${hostname}" --user "${puser}" --prefix ${results_prefix}
+fi
 
 #
 # Move results in /tmp to be results_pbench.....
