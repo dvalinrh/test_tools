@@ -6,6 +6,7 @@ devices_to_use=""
 devices_list=""
 lvm_vol=""
 lvm_grp=""
+wipefs=""
 
 usage()
 {
@@ -13,6 +14,7 @@ usage()
 	echo "   --devices_to_use: comma separated list of devices to use"
 	echo "   --lvm_grp: name of the lvm group creating"
 	echo "   --lvm_vol: name of the lvm volume creating"
+	echo "   --wipefs: wipe the device before doing the lvm operations"
 	exit 0
 }
 
@@ -52,6 +54,7 @@ ARGUMENT_LIST=(
 )
 
 NO_ARGUMENTS=(
+	"wipefs"
         "usage"
 )
 
@@ -86,6 +89,9 @@ while [[ $# -gt 0 ]]; do
 		--usage)
 			usage $0
 		;;
+		--wipefs)
+			wipefs=1
+		;;
 		-h)
 			usage $0
 		;;
@@ -110,6 +116,9 @@ for i in $devices_to_use; do
 	let "lv_total_size=$lv_total_size+$gb"
 	let "lv_disk_count=$lv_disk_count+1"
 	seper=" "
+	if [ $wipefs -eq 1 ]; then
+		wipefs -a $i
+	fi
 done
 lvremove -f $lvm_vol/$lvm_grp
 vgremove -f $lvm_vol
