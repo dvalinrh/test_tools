@@ -112,6 +112,7 @@ seper=""
 for i in $devices_to_use; do
 	lv_disks=${i}${seper}${lv_disks}
 	size=`fdisk -l $i | grep bytes | grep  Disk | cut -d' ' -f 5`
+	wipefs -a ${i}
 	gb=`echo "$size/(1024*1024*1024)" | bc`
 	let "lv_total_size=$lv_total_size+$gb"
 	let "lv_disk_count=$lv_disk_count+1"
