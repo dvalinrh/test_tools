@@ -11,6 +11,7 @@ spacing=0
 sys_type=""
 test_name=""
 times_to_run=1
+pbench_copy=0
 
 
 #
@@ -25,6 +26,7 @@ usage()
 	echo "  --tuned_setting: used in naming the tar file"
 	echo "  --usage: this usage message"
 	echo "  --pbench: use pbench-user-benchmark and place information into pbench"
+	echo "  --pbench_copy: Copy the data to the pbench repository, not move_it."
 	echo "  --pbench_user: user who started everything."
 	echo "Unused options, present as Zathras passes them in."
 	echo "  --host_config"
@@ -36,6 +38,7 @@ usage()
 	exit
 }
 
+#
 # Define options
 #
 ARGUMENT_LIST=(
@@ -50,6 +53,7 @@ ARGUMENT_LIST=(
 )
 
 NO_ARGUMENTS=(
+	"pbench_copy"
 	"usage"
 )
 
@@ -78,6 +82,10 @@ while [[ $# -gt 0 ]]; do
                         times_to_run=${2}
 			shift 2
                 ;;
+		--pbench_copy)
+			pbench_copy=1
+			shift 1
+		;;
 		--pbench_user)
 			puser=$2
 			shift 2
@@ -131,5 +139,5 @@ mv $last_tar $mv_tar_to
 value=`$TOOLS_BIN/set_pbench_variables --host_config $configuration --sys_type $sys_type --test ${test_name} --pbench_user $puser --run_label $run_label`
 results_prefix=`echo $value | cut -d: -f 2`
 hostname=`echo $value | cut -d: -f 1`
-echo $TOOLS_BIN/pbench_copy_data --hostname "${hostname}" --user "${puser}" --prefix ${results_prefix} >> /tmp/debugging
-$TOOLS_BIN/pbench_copy_data --hostname "${run_label}" --user "${puser}" --prefix ${results_prefix}
+echo $TOOLS_BIN/pbench_copy_data --hostname "${hostname}" --user "${puser}" --prefix ${results_prefix} --copy ${pbench_copy} >> /tmp/debugging
+$TOOLS_BIN/pbench_copy_data --hostname "${run_label}" --user "${puser}" --prefix ${results_prefix} --copy ${pbench_copy}
