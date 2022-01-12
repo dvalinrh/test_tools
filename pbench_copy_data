@@ -14,6 +14,7 @@ usage()
 # Define options
 #
 ARGUMENT_LIST=(
+	"copy"
 	"hostname"
 	"prefix"
 	"user"
@@ -32,6 +33,8 @@ opts=$(getopt \
 	-- "$@"
 )
 
+copy=0
+
 if [ $? -ne 0 ]; then
 	exit 1
 fi
@@ -39,6 +42,10 @@ eval set -- $opts
 
 while [[ $# -gt 0 ]]; do
 	case "$1" in
+		--copy)
+			copy=$2
+			shift 2
+		;;
 		--hostname)
 			fhost=$2
 			shift 2
@@ -87,6 +94,11 @@ if [[ "$results_prefix" == *"--"* ]]; then
 	exit 1
 fi
 
-echo pbench-copy-results --controller="\"${controller}\"" --user="\"${user}\"" --prefix="\"${results_prefix}\"" >> /tmp/debugging
-pbench-copy-results --controller="${controller}" --user="${user}" --prefix="${results_prefix}"
+if [ $copy -eq 0 ]; then
+	echo pbench-move-results --controller="\"${controller}\"" --user="\"${user}\"" --prefix="\"${results_prefix}\"" >> /tmp/debugging
+	pbench-move-results --controller="${controller}" --user="${user}" --prefix="${results_prefix}"
+else
+	echo pbench-copy-results --controller="\"${controller}\"" --user="\"${user}\"" --prefix="\"${results_prefix}\"" >> /tmp/debugging
+	pbench-copy-results --controller="${controller}" --user="${user}" --prefix="${results_prefix}"
+fi
 exit $?
