@@ -94,12 +94,19 @@ if [[ "$results_prefix" == *"--"* ]]; then
 	exit 1
 fi
 
-cvt_controller=`echo ${controller} | sed "s/_/-/g"`
-if [ $copy -eq 0 ]; then
-	echo pbench-move-results --controller="\"${cvt_controller}\"" --user="\"${user}\"" --prefix="\"${results_prefix}\"" >> /tmp/debugging
-	pbench-move-results --controller="${cvt_controller}" --user="${user}" --prefix="${results_prefix}"
+#
+# Centos pbench repo does not like "_"
+#
+if [ -f "/etc/yum.repos.d/centoscrb.repo" ]; then
+	controller_name=`echo ${controller} | sed "s/_/-/g"`
 else
-	echo pbench-copy-results --controller="\"${cvt_controller}\"" --user="\"${user}\"" --prefix="\"${results_prefix}\"" >> /tmp/debugging
-	pbench-copy-results --controller="${cvt_controller}" --user="${user}" --prefix="${results_prefix}"
+	controller_name=$controller
+fi
+if [ $copy -eq 0 ]; then
+	echo pbench-move-results --controller="\"${controller_name}\"" --user="\"${user}\"" --prefix="\"${results_prefix}\"" >> /tmp/debugging
+	pbench-move-results --controller="${controller_name}" --user="${user}" --prefix="${results_prefix}"
+else
+	echo pbench-copy-results --controller="\"${controller_name}\"" --user="\"${user}\"" --prefix="\"${results_prefix}\"" >> /tmp/debugging
+	pbench-copy-results --controller="${controller_name}" --user="${user}" --prefix="${results_prefix}"
 fi
 exit $?
