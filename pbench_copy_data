@@ -94,11 +94,12 @@ if [[ "$results_prefix" == *"--"* ]]; then
 	exit 1
 fi
 
+cvt_controller=`echo ${controller} | sed "s/_/-/g"`
 if [ $copy -eq 0 ]; then
-	echo pbench-move-results --controller="\"${controller}\"" --user="\"${user}\"" --prefix="\"${results_prefix}\"" >> /tmp/debugging
-	pbench-move-results --controller="${controller}" --user="${user}" --prefix="${results_prefix}"
+	echo pbench-move-results --controller="\"${cvt_controller}\"" --user="\"${user}\"" --prefix="\"${results_prefix}\"" >> /tmp/debugging
+	pbench-move-results --controller="${cvt_controller}" --user="${user}" --prefix="${results_prefix}"
 else
-	echo pbench-copy-results --controller="\"${controller}\"" --user="\"${user}\"" --prefix="\"${results_prefix}\"" >> /tmp/debugging
-	pbench-copy-results --controller="${controller}" --user="${user}" --prefix="${results_prefix}"
+	echo pbench-copy-results --controller="\"${cvt_controller}\"" --user="\"${user}\"" --prefix="\"${results_prefix}\"" >> /tmp/debugging
+	pbench-copy-results --controller="${cvt_controller}" --user="${user}" --prefix="${results_prefix}"
 fi
 exit $?
