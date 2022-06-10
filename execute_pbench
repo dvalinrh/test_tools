@@ -16,6 +16,7 @@ test_name=""
 times_to_run=1
 results_dir=""
 pbench_copy=1
+pbench_stats="default"
 
 #
 # Usage information.
@@ -30,6 +31,7 @@ usage()
 	echo "  --usage: this usage message"
 	echo "  --pbench: use pbench-user-benchmark and place information into pbench"
 	echo "  --pbench_user: user who started everything."
+	echo "  --pbench_stats: stats to execute with, default is all"
 	echo "Unused options, present as Zathras passes them in."
 	echo "  --host_config"
 	echo "  --home_parent"
@@ -80,6 +82,11 @@ do
 			i=$((i + 1))
 			shift 1
 		;;
+		--pbench_stats)
+			pbench_stats=$2
+			i=$((i + 2))
+			shift 2
+		;;
 		--pbench_user)
 			puser=$2
 			i=$((i + 2))
@@ -125,10 +132,28 @@ do
         esac
 done
 
+if [[ $pbench_stats != "default" ]]; then
+	pushd /var/lib/pbench-agent > /dev/null
+	rm -rf tools-v1-zathras
+	cp -R tools-v1-default tools-v1-zathras
+	cd tools-v1-zathras
+	dir=`ls -d *ip*`
+	cd  $dir
+	mkdir ../back
+	mv * ../back
+	tools=`echo $pbench_stats | sed "s/,/ /g"`
+	for i in $tools; do
+		cp ../back/$i .
+	done
+	rm -rf ../back
+	popd > /dev/null
+	pbench_stats="zathras"
+fi
+
 echo $times_to_run > ./iteration.lis
 echo Calling pbench-user-benchmark >> /tmp/debugging
 echo pbench-user-benchmark -C ${puser}_${test_name}_test --iteration-list=./iteration.lis -- $cmd_executing ${cmd_options}
-pbench-user-benchmark -C ${puser}_${test_name}_test --iteration-list=./iteration.lis -- $cmd_executing ${cmd_options}
+pbench-user-benchmark -C ${puser}_${test_name}_test --tool-group=${pbench_stats} --iteration-list=./iteration.lis -- $cmd_executing ${cmd_options}
 echo returned from pbench-user-benchmark >> /tmp/debugging
 
 dir=`ls -rtd /var/lib/pbench-agent/pben*${test_name}* | tail -1`
