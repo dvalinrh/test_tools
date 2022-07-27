@@ -71,8 +71,35 @@ fi
 # to make sure the disk exist.
 #
 if [ $numb_disks -eq 0 ]; then
-	echo  "Need to have disks to do fio"
+	echo  "Need to have disks to perform the test"
 	exit 1
 fi
+if [ -f "/tmp/meta_data.yml" ]; then
+	grep -q Azure /tmp/meta_data.yml
+	#
+	# Only for Azure.
+	#
+	if [ $? -eq 0 ]; then
+		#
+		# Only if we have both nvme and sd disks.
+		# If we have both, we take the sd disks, as the nvmes are
+		# internal disk.
+		#
+		if [[ $disks == *"nvme"* ]] && [[ $disks == *"sd"* ]]; then
+			work_disks=$disks
+			disks=""
+			seper=""
+			numb_disks=0
+			for value in $work_disks; do
+				if [[ $value != *"nvme"* ]]; then
+					disks=${disks}${seper}${value}
+					let "numb_disks=${numb_disks}+1"
+					seper=" "
+				fi
+			done
+		fi
+	fi
+fi
+
 echo  $disks:$numb_disks
 exit 0
