@@ -75,10 +75,18 @@ if [ $numb_disks -eq 0 ]; then
 	exit 1
 fi
 if [ -f "/tmp/meta_data.yml" ]; then
+	#
+	# Some of the Azure systems have a small number of available 
+	# internal disks. When the user has designated external storage
+	# we do not want to provide both the internal drives and external
+	# drives.  Right now Azure distinguishes the internal drives from the 
+	# external drives in that internals are marked nvme and the externals
+	# are sd.  If the disk list generated has both nvme and sds, we will
+	# take just the sd (external drives), and not use any of the internal
+	# drives.  Note, any devices that are already mounted, have been filtered
+	# out earlier, so they are not part of this list.
+	#
 	grep -q Azure /tmp/meta_data.yml
-	#
-	# Only for Azure.
-	#
 	if [ $? -eq 0 ]; then
 		#
 		# Only if we have both nvme and sd disks.
