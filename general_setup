@@ -154,7 +154,8 @@ do
 			#
 			# Option not recognized, must be specific to the wrapper.
 			#
-			gen_args_back=${gen_args_back}" "${1}
+			remove_it=`echo ${1} | sed "s/}//g"`
+			gen_args_back=${gen_args_back}" "${remove_it}
 			i=$((i + 1))
 			shift 1
 		;;
