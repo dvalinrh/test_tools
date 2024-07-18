@@ -193,8 +193,8 @@ cd /tmp
 #
 # Provide a common pull for Zathra.
 #
-if [[ -f  zathras.zip ]]; then
-	rm zathras.zip
-fi
-zip zathras.zip  results_pbench_${test_name}_${tuned_setting}.tar
+#if [[ -f  zathras.zip ]]; then
+#	rm zathras.zip
+#fi
+zip zathras_${test}.zip  results_pbench_${test_name}_${tuned_setting}.tar
 popd > /dev/null
