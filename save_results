@@ -196,6 +196,6 @@ cd /tmp
 if [[ -f  zathras_${test}.zip ]]; then
 	rm zathras_${test}.zip zathras_pbench_${test}.zip
 fi
-zip zathras_${test}.zip  results_pbench_${test_name}_${tuned_setting}.tar
-ln -s zathras_${test}.zip zathras_pbench_${test}.zip
+zip zathras_${test_name}.zip  results_pbench_${test_name}_${tuned_setting}.tar
+ln -s zathras_${test_name}.zip zathras_pbench_${test_name}.zip
 popd > /dev/null
