@@ -1,4 +1,22 @@
 #
+# Copyright (C) 2022  David Valin dvalin@redhat.com
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+#
+
+#
 # This file is contains code that is common among the test wrappers.
 #
 
@@ -22,6 +40,7 @@ source ~/.bashrc
 # to_sys_type: for results info, basically aws, azure or local
 # to_sysname: name of the system
 # to_tuned_setting: tuned setting
+# to_no_pkg_install: Test is not to use dnf/yum/apt or other such tools
 
 #
 # Present usage information.
@@ -32,47 +51,45 @@ gs_usage_info()
 {
 	echo "General options"
 	echo "  --home_parent <value>: Our parent home directory.  If not set, defaults to current working directory."
-	echo "  --host_config <value>: default is the current host name"
+	echo "  --host_config <value>: default is the current host name."
 	echo "  --iterations <value>: Number of times to run the test, defaults to 1."
-	echo "  --pbench: use pbench-user-benchmark and place information into pbench, defaults to do not use"
+	echo "  --iteration_default <value>: Value to set iterations to, if default is not set."
+	echo "  --no_pkg_install: Test is not to use dnf/yum/apt or other such tools"
+	echo "  --pbench: use pbench-user-benchmark and place information into pbench, defaults to do not use."
 	echo "  --pbench_user <value>: user who started everything. Defaults to the current user."
 	echo "  --pbench_copy: Copy the pbench data, not move it."
-	echo "  --pbench_stats: What stats to gather."
-	echo "  --run_label: the label to associate with the pbench run"
-	echo "  --run_user: user that is actually running the test on the test system."
-	echo "  --sys_type: Type of system working with, aws, azure, hostname.  Defaults to hostname"
-	echo "  --sysname: name of the system running, used in determing config files.  Defaults to hostname"
+	echo "  --pbench_stats: What stats to gather. Defaults to all stats."
+	echo "  --run_label: the label to associate with the pbench run. No default setting."
+	echo "  --run_user: user that is actually running the test on the test system. Defaults to user running wrapper."
+	echo "  --sys_type: Type of system working with, aws, azure, hostname.  Defaults to hostname."
+	echo "  --sysname: name of the system running, used in determining config files.  Defaults to hostname."
 	echo "  --tuned_setting: used in naming the tar file, default for RHEL is the current active tuned.  For non"
-	echo "    RHEL systems, default is none"
-	echo "  --usage: this usage message"
-	exit
+	echo "    RHEL systems, default is none."
+	echo "  --usage: this usage message."
+	exit 1
 }
 
 to_sys_type=`hostname`
 to_configuration=`hostname`
-to_home_root=`pwd`
-TOOLS_BIN=`pwd`/test_tools
+to_home_root=`echo $HOME | rev | cut -d'/' -f 2- | rev`
+if [[ $to_home_root == "" ]]; then
+	to_home_root="/"
+fi
 to_pbench=0
 to_pbench_copy="0"
 
 to_puser=`whoami`
 to_run_user=`whoami`
-to_times_to_run=1
+to_times_to_run=0
+iteration_default=1
 to_run_label=""
 to_user=`whoami`
 to_sysname=`hostname`
 to_pstats="default"
+to_no_pkg_install=0
 
-if [ -f /usr/sbin/tuned-adm ]; then
-	tval=`/usr/sbin/tuned-adm active|awk '{print $4}'`
-	if [[ $tval == "profile." ]]; then
-		tval=tuned_none
-	fi
-else
-	tval="tuned_none"
-fi
-
-to_tuned_setting=$tval
+top_dir=`echo $0 | sed "s/workloads/:/g" | cut -d':' -f 1`
+to_tuned_setting="none"
 
 i=1
 j=$#
@@ -104,6 +121,14 @@ do
 			to_times_to_run=$value
 			shift 2
 		;;
+		--iteration_default)
+			iteration_default=$value
+			shift 2
+		;;
+		--no_pkg_install)
+			to_no_pkg_install=1
+			shift 1
+		;;
 		--pbench)
 			to_pbench=1
 			i=$((i + 1))
@@ -116,17 +141,17 @@ do
 		;;
 		--pbench_stats)
 			i=$((i + 2))
-			to_pstats=$2
+			to_pstats=$value
 			shift 2
 		;;
 		--pbench_user)
 			i=$((i + 2))
-			to_puser=$2
+			to_puser=$value
 			shift 2
 		;;
 		--run_label)
 			i=$((i + 2))
-			to_run_label=$2
+			to_run_label=$value
 			shift 2
 		;;
 		--run_user)
@@ -141,7 +166,14 @@ do
 		;;
 		--tuned_setting)
 			i=$((i + 2))
-			to_tuned_setting="${value}"
+			if [[ $value != "none" ]]; then
+				to_tuned_setting="${value}"
+				if [ -f /usr/sbin/tuned-adm ]; then
+					tuned-adm active ${value}
+				else
+					echo Warning: asking for tuned setting $value, but tuned-adm is not installed.
+				fi
+			fi
 			shift 2
 		;;
 		--usage)
@@ -154,11 +186,17 @@ do
 			#
 			# Option not recognized, must be specific to the wrapper.
 			#
-			remove_it=`echo ${1} | sed "s/}//g"`
-			gen_args_back=${gen_args_back}" "${remove_it}
+			gen_args_back=${gen_args_back}" "${1}
 			i=$((i + 1))
 			shift 1
 		;;
 	esac
 done
+TOOLS_BIN=`pwd`/test_tools
+if [ ! -d $TOOLS_BIN ]; then
+	TOOLS_BIN=${to_home_root}/${to_user}/test_tools
+fi
+if [ $to_times_to_run -eq 0 ]; then
+	to_times_to_run=$iteration_default
+fi
 set $gen_args_back
