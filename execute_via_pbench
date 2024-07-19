@@ -121,7 +121,7 @@ do
 			shift 2
 		;;
 		--tuned_setting)
-			cmd_options="${cmd_options}${separ}${1} ${2}"
+#			cmd_options="${cmd_options}${separ}${1} ${2}"
 			tuned_setting=${2}
 			shift 2
 		;;
